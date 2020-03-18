@@ -15,7 +15,7 @@ The protocol is designed with the following goals in mind:
     - Mock backends and intercept network requests
     - Record traffic
     - Full-page screenshot
-    - Access to native devtools protocol
+    - (❓) Access to native devtools protocol
     - Dynamic changes to iframe or documents
     - Performance timings
     - Notifying of new contexts
@@ -40,6 +40,7 @@ A protocol and transport layer for bidirectional WebDriver should support the fo
 - Command/response pattern for simple actions like querying a target's URL.
 - Command/response/notification pattern for starting a long-running operation and receiving progress updates (e.g. navigation).
 - Registering for async notifications not associated with a particular command. Useful for listening to DOM events or new targets/contexts, etc.
+- Pipelining
 
 The protocol should also be:
 
@@ -60,6 +61,8 @@ The spec itself doesn't have any actual provisions for Server-to-Client messagin
 JSON-RPC is also accompanied by the [OpenRPC](https://open-rpc.org/) spec; an interface description format for JSON-RPC APIs that is both human and machine-readable. Using OpenRPC, we can document and describe the entire bidirectional WebDriver API, and also make it simple for clients to generate language bindings and keep them up to date. OpenRPC is recommended over OpenAPI because OpenRPC is designed specifically with JSON-RPC in mind. OpenAPI is designed to specify REST-style APIs, and so isn't as well suited to a JSON-RPC API. The OpenRPC maintainers provide tools to generate human-readable documenation and typings/bindings for various languages.
 
 The JSON-RPC spec is transport-agnostic and covers only the message data format. WebSockets are the recommended transport mechanism. They support the full-duplex communication that we'll need for bidirectional WebDriver scenarios, and have broad library support in multiple languages. Adopting a technology other than HTTP and WebSockets is not recommended since this would likely require WebDriver implementers and users to take on new library dependencies on both the client and server sides.
+
+<Limitations of WebSockets wrt grid deployment or multiple connections?>
 
 ### High-Level Interface
 
