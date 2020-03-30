@@ -72,6 +72,8 @@ Exposing all of WebDriver's functionality via JSON-RPC has a few advantages. The
 
 The interface for the new protocol would be a set of client-to-server commands, and a set of server-to-client notifications. Clients can send commands and subscribe to notifications. An OpenRPC JSON specification is included alongside this document. It describes a JSON-RPC interpretation of the current WebDriver feature set and adds some useful notifications.
 
+< Accept WebDriver 1.0 commands over web socket so client don't have to care about the difference? >
+
 #### Commands
 
  Below are some sample messages that illustrate what commands in the JSON-RPC-based WebDriver protocol might look like:
@@ -116,6 +118,8 @@ Note that in this example, "stacktrace" is embedded in the "data" property inste
 #### Notifications
 
 Since notifications may generate a large amount of traffic over the WebSocket, and may have a runtime cost in the browser, these should be opt-in. Commands should be provided so that a client can subscribe and unsubscribe. The first step to receive notifications on the client side would be to send a "subscribe" command:
+
+< Or subscribe to a whole group of related notifications >
 
 *Subscribing for a notification*
 
@@ -211,7 +215,7 @@ Today, WebDriver uses strings called "window handles" to uniquely identify top-l
 
 ### Identifying windows and other top-level targets
 
-While we didn't arrive at any resolutions on the subject at TPAC this year, there was general interest in adding support for new contexts such as service workers and different JS realms. A WebDriver "window" in the current model considers only browsing contexts. It also conflates the concept of a browsing context with the concept of a script context. What's this means in practice is that only document script contexts are visible to WebDriver. This is usually all the user needs/wants, but it precludes access to other script contexts such as web workers, service workers, and web extensions. Since some changes will already be necessary to allow the bidi protocol to target the contexts that already exists (i.e. frames), now seems as good a time as any to define these additional contexts and light up some new customer scenarios. Below is an updated browser model with some new (*) concepts:
+While we didn't arrive at any resolutions on the subject at TPAC this year, there was general interest in adding support for new contexts such as service workers and different JS realms. A WebDriver "window" in the current model considers only browsing contexts. It also conflates the concept of a browsing context with the concept of a script context. What this means in practice is that only document script contexts are visible to WebDriver. This is usually all the user needs/wants, but it precludes access to other script contexts such as web workers, service workers, and web extensions. Since some changes will already be necessary to allow the bidi protocol to target the contexts that already exist (i.e. frames), now seems as good a time as any to define these additional contexts and light up some new customer scenarios. Below is an updated browser model with some new (*) concepts:
 
 - WebDriver Session
     - Target* (Formerly "Window". Can be a page or service worker)
@@ -297,6 +301,8 @@ Below are some sample bidi commands that illustrate how message routing would wo
 ```
 
 This model should make it possible to target all of the contexts that WebDriver supports today without the need for an implicit "current" context. It should also enable many of the proposed future scenarios discussed at TPAC. The next section covers how a client would discover these contexts.
+
+< Implicit default context simplifies usage for consumers, but maybe that's something that should be provided on the opinionated-client level >
 
 ## Target Discovery
 
